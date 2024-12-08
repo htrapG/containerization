@@ -1,0 +1,58 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ .Values.services.gateway.name }}
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    app: {{ .Values.gateway.label }}
+  ports:
+  - protocol: TCP
+    port: {{ .Values.gateway.containerPort }}  
+    {{if eq .Values.services.gateway.type "NodePort"}}
+    nodePort: {{ .Values.services.gateway.nodePort }}
+    {{ end }}
+  type: {{ .Values.services.gateway.type }} 
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ .Values.services.payroll.name }} 
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    app: {{ .Values.payroll.label }} 
+  ports:
+  - protocol: TCP
+    port: {{ .Values.payroll.containerPort }}  
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ .Values.services.timesheet.name }} 
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    app: {{ .Values.timesheet.label }} 
+  ports:
+  - protocol: TCP
+    port: {{ .Values.timesheet.containerPort }} 
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ .Values.services.neo4j.name }} 
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    app: {{ .Values.neo4j.label }} 
+  ports:
+  - name: http
+    protocol: TCP
+    port: 7474
+    nodePort: {{ .Values.services.neo4j.httpNodePort }}   
+  - name: bolt
+    protocol: TCP
+    port: 7687
+    nodePort: {{ .Values.services.neo4j.boltNodePort }}    
+  type: NodePort
